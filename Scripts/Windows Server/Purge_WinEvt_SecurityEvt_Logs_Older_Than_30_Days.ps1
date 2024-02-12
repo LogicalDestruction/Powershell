@@ -25,7 +25,6 @@ $DeleteOlderThanDays = -30
 $EventArchivePath = "C:\Windows\System32\winevt\Logs"
 
 ########################################## Main Script ##########################################
-
 #Get a list of files in the Path listed above and only select those files with the name Archive-Security in them and
 #and only those older than the variable listed above then remove anything that matches those conditions.
 Get-ChildItem -Path $EventArchivePath | Where-Object {($_.Name -like "Archive-Security*.*") -and ($_.LastWriteTime -lt (Get-Date).AddDays($DeleteOlderThanDays))} | Remove-Item
