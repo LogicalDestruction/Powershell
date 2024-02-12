@@ -1,4 +1,4 @@
-##########################################
+################################################################################################
 # Author: Robert Stacks
 # Date: 6/19/2023
 #
@@ -11,7 +11,7 @@
 #                    Event times are recorded in GMT standard time regardless of timezone configured.
 #   
 #                    Script was created to prevent the C: Drive from filling up.                  
-###############################################################################################
+################################################################################################
 
 ########################################## Variables ###########################################
 #These can be updated if needed without touching all parts of the script.
