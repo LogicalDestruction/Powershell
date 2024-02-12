@@ -1,11 +1,10 @@
-##########################################
+###############################################################################################
 # Author: Robert Stacks
 # Date: 7/13/2023
-#
-# Last Updated by: Robert Stacks
 # Last Update Date: 7/13/2023
 #
-# Purpose of Script: To clean up typical temp directories found on a Windows Server
+# Purpose of Script: 
+#                    To clean up typical temp directories found on a Windows Server
 #                    You might consider using task scheduler to run this once a month, 
 #                    or once a day or whatever your needs may be.
 ###############################################################################################
