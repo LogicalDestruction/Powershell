@@ -7,21 +7,32 @@
     .NOTES
         Name: Get-DirectoryTreeSize
         Author: Robert Stacks
-        Version: 0.11
-        DateCreated: 7-23-2024
-        DateModified: 7-30-2024
+        Version: 1.0
+        DateCreated: 8-01-2024        
     
     .PARAMETER Path
-        The path Parameter will default to the current path or else accept the path as the input with or without the -Path parameter.
+        The -path Parameter will default to the current path or else accept the -path as the input.
+
+    .PARAMETER Files
+        The -Files Parameter will expand the Files in the directory, by default they are combined into a single [Count Files] line with the Sum of their total Sizes
 
     .PARAMETER Sortby
-        Using this parameter the function will sort the returned results by Type(Directory and File Name.  Directories will come first), MB, or GB.  Default is by MB if not selected
-    
-    .PARAMETER Ascending
-        This is the reverse of the standard Sortby option which is in Descending order.  Might be useful in some situations.
-    
+        The -Sortby will accept Alpha or Size as parameters.  Default is to sort by Size but if you want to sort the output by Directory Name or 
+        File Name you have that option.
+
     .EXAMPLE
-        
+    C:\Get-DirectoryTreeSize -path C:\Users\username\Downloads
+
+    Sample Output
+
+    Type       Name                                               % of Parent       Size   LastModified
+    ----       ----                                               -----------       ----   ------------
+    Path       C:\Users\username\Downloads\                             100.0%   14.8 GB     2024-08-01
+    Directory  ISOs                                                     75.0%    11.1 GB     2024-07-25
+    Directory  DokuWikiStick                                             1.2%   175.1 MB     2024-07-19
+    Directory  TestEmpty                                                 0.0%     0.0 KB     2024-07-30
+    Files      [ 21 Files]                                              23.7%     3.5 GB     2024-08-01
+    
     #>
 
     # Function to write headers with specific formatting used in the main function
@@ -124,7 +135,7 @@ function Format-OutputTable {
 
 }
     
-    # Main Function
+    ###### Main Function ######
     function Get-DirectoryTreeSize {
         [CmdletBinding()]
         param(
