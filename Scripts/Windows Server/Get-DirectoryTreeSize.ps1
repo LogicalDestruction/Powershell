@@ -43,13 +43,13 @@
         )
     
         if ($TotalSizeBytes -lt 1MB) {
-            $size = "{0,15:N1} KB" -f ($TotalSizeBytes / 1KB)
+            $size = "{0:N1} KB" -f ($TotalSizeBytes / 1KB)
         }
         elseif ($TotalSizeBytes -lt 1GB) {
-            $size = "{0,15:N1} MB" -f ($TotalSizeBytes / 1MB)
+            $size = "{0:N1} MB" -f ($TotalSizeBytes / 1MB)
         }
         else {
-            $size = "{0,15:N1} GB" -f ($TotalSizeBytes / 1GB)
+            $size = "{0:N1} GB" -f ($TotalSizeBytes / 1GB)
         }
     
         return $size
@@ -75,9 +75,10 @@ function Format-OutputTable {
     # Set minimum widths
     $typeWidth = [math]::Max($maxTypeLength, 10)
     $nameWidth = [math]::Max($maxNameLength, 50)
-    $sizeWidth = [math]::Max($maxSizeLength, 20)
-    $lastModifiedWidth = [math]::Max($maxLastModifiedLength, 10)
-    $PercentOfParentWidth = 10
+    $PercentOfParentWidth = 11
+    $sizeWidth = [math]::Max($maxSizeLength, 10)
+    $lastModifiedWidth = [math]::Max($maxLastModifiedLength, 14)
+    
 
     # Function to truncate strings that exceed the maximum width
     function Get-TruncateString {
@@ -92,8 +93,8 @@ function Format-OutputTable {
     }
 
     # Print headers
-    Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$sizeWidth} {3,-$lastModifiedWidth} {4,$PercentOfParentWidth}" -f "Type", "Name", "Size", "LastModified", "% of Parent") -ForegroundColor Green
-    Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$sizeWidth} {3,-$lastModifiedWidth} {4,$PercentOfParentWidth}" -f "----", "----", "----", "------------", "-----------") -ForegroundColor Green
+    Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$PercentOfParentWidth} {3,$sizeWidth} {4,$lastModifiedWidth}" -f "Type", "Name", "% of Parent", "Size", "LastModified") -ForegroundColor Green
+    Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$PercentOfParentWidth} {3,$sizeWidth} {4,$lastModifiedWidth}" -f "----", "----", "-----------", "----", "------------") -ForegroundColor Green
 
     
     foreach ($item in $OutputList) {
@@ -105,10 +106,10 @@ function Format-OutputTable {
             $SizeofItem = (([double]($item.size -replace '[^\d\.]',''))* 1kb)
         }
         elseif($item.size -like "*MB"){
-            $SizeofItem = (([double]($item.size -replace '[^\d\.]',''))*1MB)
+            $SizeofItem = (([double]($item.size -replace '[^\d\.]',''))* 1MB)
         }
         elseif($item.size -like "*GB"){
-            $SizeofItem = (([double]($item.size -replace '[^\d\.]',''))*1GB)
+            $SizeofItem = (([double]($item.size -replace '[^\d\.]',''))* 1GB)
         }
         
         #Figure out the PercentOfParent space wise a item is consuming and return it as a Percentage.
@@ -118,7 +119,7 @@ function Format-OutputTable {
         }
  
         # Print each item and include % of Parent
-        Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$sizeWidth} {3,-$lastModifiedWidth} {4,$PercentOfParentWidth}" -f $item.Type, $truncatedName, $item.Size, $item.LastModified, $PercentofParent)
+        Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$PercentOfParentWidth} {3,$sizeWidth} {4,$lastModifiedWidth}" -f $item.Type, $truncatedName, $PercentofParent, $item.Size, $item.LastModified)
     }
 
 }
