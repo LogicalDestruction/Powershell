@@ -102,6 +102,7 @@
                                 Type = "Directory"
                                 Name = $item.Name
                                 Size = $size
+                                LastModified =$item.LastWriteTime.ToString("yyyy-MM-dd")
                             } #End OutputObject
                             $AllItemsSize+=$TotalSizeBytes
                             $DirectoryList.Add($outputObject)
@@ -115,6 +116,7 @@
                                 Type = "File"
                                 Name = $item.Name
                                 Size = $size
+                                LastModified =$item.LastWriteTime.ToString("yyyy-MM-dd")
                             } # End Else
                             $AllItemsSize+=$FileSizeBytes
                             $SumAllFilesSizes+=$FileSizeBytes
@@ -145,6 +147,7 @@
                 Type = "Path"
                 Name = $Path
                 Size = $PathSize
+                LastModified =(Get-Item $Path).LastWriteTime.ToString("yyyy-MM-dd")
             } #End outputObject
             $TotalPathSize.add($outputObject)
 
@@ -156,6 +159,7 @@
                 Type = "Files"
                 Name = "[ " + $FileList.Count + " Files]"
                 Size = $Size
+                LastModified = (Get-Date).ToString("yyyy-MM-dd")
             } #End outputObject
             $FileSumList.add($outputObject)
 
