@@ -43,7 +43,7 @@
         )
     
         if ($TotalSizeBytes -lt 1MB) {
-            $size = "{0,15:N1} KB" -f ($TotalSizeBytes / 1024)
+            $size = "{0,15:N1} KB" -f ($TotalSizeBytes / 1KB)
         }
         elseif ($TotalSizeBytes -lt 1GB) {
             $size = "{0,15:N1} MB" -f ($TotalSizeBytes / 1MB)
@@ -112,7 +112,8 @@ function Format-OutputTable {
         }
         
         #Figure out the PercentOfParent space wise a item is consuming and return it as a Percentage.
-        $PercentOfParent = if ($parentDirectorySize -ne 0) {"{0,10:N1}%" -f (($SizeofItem/$AllItemsSize)*100)} else {
+                   
+        $PercentOfParent = if ($AllItemsSize -ne 0) {"{0,10:N1}%" -f (($SizeofItem/$AllItemsSize)*100)} else {
             "0.0%"
         }
  
