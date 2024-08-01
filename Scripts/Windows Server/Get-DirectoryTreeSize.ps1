@@ -30,7 +30,9 @@
             [string]$HeaderText,
             [ConsoleColor]$Color
         )
-        Write-Host ("==========={0}==========" -f $HeaderText) -ForegroundColor $Color
+        Write-Host ""
+        Write-Host ("======================= {0} =======================" -f $HeaderText) -ForegroundColor $Color
+        Write-Host ""
     } #End function Write-Header
 
     # FUnction to determine the best Unit Size to display
@@ -41,7 +43,7 @@
         )
     
         if ($TotalSizeBytes -lt 1MB) {
-            $size = "{0,15:N1} KB" -f ($TotalSizeBytes / 1KB)
+            $size = "{0,15:N1} KB" -f ($TotalSizeBytes / 1024)
         }
         elseif ($TotalSizeBytes -lt 1GB) {
             $size = "{0,15:N1} MB" -f ($TotalSizeBytes / 1MB)
@@ -52,6 +54,73 @@
     
         return $size
     }
+
+    # Function to create formatted output table
+function Format-OutputTable {
+    param (
+        [Parameter(Position = 0, Mandatory = $false)]
+        [array]$OutputList,
+
+        [Parameter(Position = 2, Mandatory = $false)]
+        [Long]$AllItemsSize
+    )
+
+    # Determine the maximum lengths of each column
+    $maxTypeLength = ($OutputList | Measure-Object -Property Type -Maximum).Maximum.Length
+    $maxNameLength = ($OutputList | Measure-Object -Property Name -Maximum).Maximum.Length
+    $maxSizeLength = ($OutputList | Measure-Object -Property Size -Maximum).Maximum.Length
+    $maxLastModifiedLength = ($OutputList | Measure-Object -Property LastModified -Maximum).Maximum.Length
+    
+
+    # Set minimum widths
+    $typeWidth = [math]::Max($maxTypeLength, 10)
+    $nameWidth = [math]::Max($maxNameLength, 50)
+    $sizeWidth = [math]::Max($maxSizeLength, 20)
+    $lastModifiedWidth = [math]::Max($maxLastModifiedLength, 10)
+    $PercentOfParentWidth = 10
+
+    # Function to truncate strings that exceed the maximum width
+    function Get-TruncateString {
+        param (
+            [string]$String,
+            [int]$MaxLength
+        )
+        if ($String.Length -gt $MaxLength) {
+            return $String.Substring(0, $MaxLength - 3) + "..."
+        }
+        return $String
+    }
+
+    # Print headers
+    Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$sizeWidth} {3,-$lastModifiedWidth} {4,$PercentOfParentWidth}" -f "Type", "Name", "Size", "LastModified", "% of Parent") -ForegroundColor Green
+    Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$sizeWidth} {3,-$lastModifiedWidth} {4,$PercentOfParentWidth}" -f "----", "----", "----", "------------", "-----------") -ForegroundColor Green
+
+    
+    foreach ($item in $OutputList) {
+        #Truncate Names if needed
+        $truncatedName = Get-TruncateString -String $item.Name -MaxLength $nameWidth
+        
+        #Convert the Item.Size which is stored as a number with a bit of text KB,MB,GB back into Bytes to do some math.
+        if($item.size -like "*KB"){
+            $SizeofItem = (([double]($item.size -replace '[^\d\.]',''))* 1kb)
+        }
+        elseif($item.size -like "*MB"){
+            $SizeofItem = (([double]($item.size -replace '[^\d\.]',''))*1MB)
+        }
+        elseif($item.size -like "*GB"){
+            $SizeofItem = (([double]($item.size -replace '[^\d\.]',''))*1GB)
+        }
+        
+        #Figure out the PercentOfParent space wise a item is consuming and return it as a Percentage.
+        $PercentOfParent = if ($parentDirectorySize -ne 0) {"{0,10:N1}%" -f (($SizeofItem/$AllItemsSize)*100)} else {
+            "0.0%"
+        }
+ 
+        # Print each item and include % of Parent
+        Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$sizeWidth} {3,-$lastModifiedWidth} {4,$PercentOfParentWidth}" -f $item.Type, $truncatedName, $item.Size, $item.LastModified, $PercentofParent)
+    }
+
+}
     
     # Main Function
     function Get-DirectoryTreeSize {
@@ -96,13 +165,14 @@
                             # Calculate total size of files in the directory
                             $TotalSizeBytes = (Get-ChildItem -Path $item.FullName -File -Recurse -Force -ErrorAction SilentlyContinue| Measure-Object -Property Length -Sum).Sum
                             $size = Get-CalculateUnit $TotalSizeBytes
-                            
+                                                
                             # Format output in columns for directories
                             $outputObject = [pscustomobject]@{
                                 Type = "Directory"
                                 Name = $item.Name
                                 Size = $size
                                 LastModified =$item.LastWriteTime.ToString("yyyy-MM-dd")
+                                
                             } #End OutputObject
                             $AllItemsSize+=$TotalSizeBytes
                             $DirectoryList.Add($outputObject)
@@ -117,6 +187,7 @@
                                 Name = $item.Name
                                 Size = $size
                                 LastModified =$item.LastWriteTime.ToString("yyyy-MM-dd")
+                                
                             } # End Else
                             $AllItemsSize+=$FileSizeBytes
                             $SumAllFilesSizes+=$FileSizeBytes
@@ -148,18 +219,20 @@
                 Name = $Path
                 Size = $PathSize
                 LastModified =(Get-Item $Path).LastWriteTime.ToString("yyyy-MM-dd")
+
             } #End outputObject
             $TotalPathSize.add($outputObject)
 
-            #Create a Object to contain the Sum of all files
-            # Determine the total Size of the Path passed to the funciton
+            # Determine the SumAllFilesSizes a unit size based on size
             $Size = Get-CalculateUnit $SumAllFilesSizes
             
+            #Create a object for the Sum of all Files to display.
             $outputObject = [pscustomobject]@{
                 Type = "Files"
                 Name = "[ " + $FileList.Count + " Files]"
                 Size = $Size
                 LastModified = (Get-Date).ToString("yyyy-MM-dd")
+        
             } #End outputObject
             $FileSumList.add($outputObject)
 
@@ -182,11 +255,11 @@
     
             if ($Headers) {
                 Write-Header "Path" -Color Green
-                $TotalPathSize | Format-Table -AutoSize
+                Format-OutputTable $TotalPathSize $AllItemsSize
 
                 Write-Header "Directories" -Color Green
                 if ($DirectoryList.Count -gt 0) {
-                    $DirectoryList | Format-Table -AutoSize
+                    Format-OutputTable $DirectoryList $AllItemsSize
                 } #end if
                 else {
                     Write-Host "No directories found." -ForegroundColor Yellow
@@ -195,14 +268,14 @@
                 Write-Header "Files" -Color Green
                 if ($Files){
                     if ($FileList.Count -gt 0) {
-                        $FileList | Format-Table -AutoSize
+                        Format-OutputTable $FileList $AllItemsSize
                     } #end if
                     else {
                         Write-Host "No files found." -ForegroundColor Yellow
                     } #end else
                 }
                 else {
-                    $FileSumList | Format-Table -AutoSize
+                    Format-OutputTable $FileSumList $AllItemsSize
                 }
                 
                 if ($ErrorList.Count -gt 0) {
@@ -219,12 +292,12 @@
                 if ($Files){
                 #Output with Files if Parameter is used.
                 $outputList = $TotalPathSize + $DirectoryList + $FileList
-                Write-Output $outputList | Format-Table -AutoSize
+                Format-OutputTable $outputList $AllItemsSize
                 }
                 else {
                 # Output with a Sum entry for files by default
                 $outputList = $TotalPathSize + $DirectoryList + $FileSumList
-                Write-Output $outputList | Format-Table -AutoSize
+                Format-OutputTable $outputList $AllItemsSize
                 }
                 # Output errors last
                 if ($ErrorList.Count -gt 0) {
