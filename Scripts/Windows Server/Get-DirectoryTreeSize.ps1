@@ -30,17 +30,17 @@
     IE: C:\Get-DirectoryTreeSize -path C:\somedirectory -SizeLimitGB 10  # Would only return directories or files that are larger than 10GB.
 
 .EXAMPLE
-C:\Get-DirectoryTreeSize -path C:\Users\username\Downloads
+    C:\Get-DirectoryTreeSize -path C:\Users\username\Downloads
 
-Sample Output
+    Sample Output
 
-Type       Name                                               % of Parent       Size   LastModified
-----       ----                                               -----------       ----   ------------
-Path       C:\Users\username\Downloads\                             100.0%   14.8 GB     2024-08-01
-Directory  ISOs                                                     75.0%    11.1 GB     2024-07-25
-Directory  DokuWikiStick                                             1.2%   175.1 MB     2024-07-19
-Directory  TestEmpty                                                 0.0%     0.0 KB     2024-07-30
-Files      [ 21 Files]                                              23.7%     3.5 GB     2024-08-01
+    Type       Name                                               % of Parent       Size   LastModified
+    ----       ----                                               -----------       ----   ------------
+    Path       C:\Users\username\Downloads\                             100.0%   14.8 GB     2024-08-01
+    Directory  ISOs                                                     75.0%    11.1 GB     2024-07-25
+    Directory  DokuWikiStick                                             1.2%   175.1 MB     2024-07-19
+    Directory  TestEmpty                                                 0.0%     0.0 KB     2024-07-30
+    Files      [ 21 Files]                                              23.7%     3.5 GB     2024-08-01
 
 #>
 
