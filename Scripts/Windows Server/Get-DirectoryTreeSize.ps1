@@ -7,8 +7,10 @@
 .NOTES
     Name: Get-DirectoryTreeSize
     Author: Robert Stacks
-    Version: 1.0
-    DateCreated: 8-01-2024        
+    Version: 1.1
+    DateCreated: 07-23-2024
+    Updated: 08-02-2024
+    URL: https://github.com/LogicalDistruction/Powershell/blob/main/Scripts/Windows%20Server/Get-DirectoryTreeSize.ps1
 
 .PARAMETER Path
     The -path Parameter will default to the current path or else accept the -path as the input.
