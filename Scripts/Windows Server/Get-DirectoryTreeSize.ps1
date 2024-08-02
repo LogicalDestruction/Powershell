@@ -4,6 +4,14 @@
     are being consumed by large files or a large group of files that consume a large amount of space.  Examples of this would be log files that are not 
     getting flushed or large files like ISOs or backups.  Size values are returned in KB, MB, or GB.
 
+    It will color code Lines in color based on % of Parent
+    The heading will be Green
+    The Path will alway be Cyan
+    Items above 75% will be Red
+    Items above 50% will be orange
+    Items above 25% will be yellow
+    Evething else will be White.
+
 .NOTES
     Name: Get-DirectoryTreeSize
     Author: Robert Stacks
@@ -52,7 +60,7 @@ function Write-Header
         [ConsoleColor]$Color
     )
     Write-Host ""
-    Write-Host ("======================= {0} =======================" -f $HeaderText) -ForegroundColor $Color
+    Write-Host ("======================= {0} =======================" -f $HeaderText) -ForegroundColor $Color 
     Write-Host ""
 } #End function Write-Header
 
@@ -106,6 +114,9 @@ function Format-OutputTable
     $PercentOfParentWidth = 11
     $sizeWidth = [math]::Max($maxSizeLength, 10)
     $lastModifiedWidth = [math]::Max($maxLastModifiedLength, 14)
+
+    # Width Count test
+    $TotalColumnWidth = $typeWidth + $nameWidth + $PercentOfParentWidth + $sizeWidth + $lastModifiedWidth
     
     
     # Function to truncate strings that exceed the maximum width
@@ -120,10 +131,32 @@ function Format-OutputTable
         return $String
     }
 
+    # Function to get color based on percentage
+    function Get-ColorByPercentage {
+        param (
+            [double]$Percentage
+        )
+        if ($Percentage -ge 75) 
+        {
+            return "Red"
+        } 
+        elseif ($Percentage -ge 50) 
+        {
+            return "Orange"
+        } 
+        elseif ($Percentage -ge 25) 
+        {
+            return "Yellow"
+        } 
+        else 
+        {
+            return "White"
+        }
+    }
+
     # Print headers
     Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$PercentOfParentWidth} {3,$sizeWidth} {4,$lastModifiedWidth}" -f "Type", "Name", "% of Parent", "Size", "LastModified") -ForegroundColor Green
     Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$PercentOfParentWidth} {3,$sizeWidth} {4,$lastModifiedWidth}" -f "----", "----", "-----------", "----", "------------") -ForegroundColor Green
-
     
     foreach ($item in $OutputList) {
         # Convert the Item.Size which is stored as a number with a bit of text KB,MB,GB back into Bytes to do some math.
@@ -147,8 +180,11 @@ function Format-OutputTable
         $PercentOfParent = if($item.type -eq "Path"){"100%"}elseif ($AllItemsSize -ne 0) {"{0:N2}%" -f (($SizeofItem/$AllItemsSize)*100)} else {
             "0.0%"}
         
+        # Figure out the color to return based on the PercentOfParent and the Get-ColorByPercentage function defined above
+        $color = if($item.type -eq "Path") {"Cyan"} else { Get-ColorByPercentage ([double]$PercentOfParent.Replace("%", "")) }
+
         # Print each item and include % of Parent
-        Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$PercentOfParentWidth} {3,$sizeWidth} {4,$lastModifiedWidth}" -f $item.Type, $truncatedName, $PercentofParent, $item.Size, $item.LastModified)
+        Write-Host ("{0,-$typeWidth} {1,-$nameWidth} {2,$PercentOfParentWidth} {3,$sizeWidth} {4,$lastModifiedWidth}" -f $item.Type, $truncatedName, $PercentofParent, $item.Size, $item.LastModified) -ForegroundColor $color
         }
     }
 }   
