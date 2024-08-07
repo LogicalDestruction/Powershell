@@ -15,9 +15,9 @@
 .NOTES
     Name: Get-DirectoryTreeSize
     Author: Robert Stacks
-    Version: 1.1
+    Version: 1.11
     DateCreated: 07-23-2024
-    Updated: 08-02-2024
+    Updated: 08-07-2024
     URL: https://github.com/LogicalDistruction/Powershell/blob/main/Scripts/Windows%20Server/Get-DirectoryTreeSize.ps1
 
 .PARAMETER Path
