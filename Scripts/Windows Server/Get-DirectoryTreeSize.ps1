@@ -117,8 +117,7 @@ function Format-OutputTable
 
     # Width Count test
     # $TotalColumnWidth = $typeWidth + $nameWidth + $PercentOfParentWidth + $sizeWidth + $lastModifiedWidth
-    
-    
+        
     # Function to truncate strings that exceed the maximum width
     function Get-TruncateString {
         param (
