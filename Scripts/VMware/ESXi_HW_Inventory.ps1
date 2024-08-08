@@ -27,17 +27,20 @@ $vcenterServers = @(
     "vcenter2"
 )
 
-# Outputformat can = LIST or TABLE
+# Outputformat can = LIST,TABLE, or CSV just uncomment your choice.
 #$Outputformat = "LIST"
-$Outputformat = "TABLE"
-#$Outputformat = "CSV"
+#$Outputformat = "TABLE"
+$Outputformat = "CSV"
 
 #########################################
 
 ############### Variables ###############
 
-# Make sure the Output file is empty.
-Clear-Content -Path $Outfile
+# If the file defined above exists make sure the Output file is empty.
+if (Test-Path $Outfile)
+{
+  Clear-Content -Path $Outfile
+}
 # Get the date and format for use in reporting
 $formateddate = (get-date).ToString("MMMM dd, yyyy")
 
@@ -69,8 +72,15 @@ function Format-Size {
     }
 }
 
-Write-Output "====== ESXi Host Hardware Report from vCenter ======" >> $Outfile
-Write-Output "===== Last Reported: $formateddate =====" >> $Outfile
+if(($Outputformat -eq "TABLE") -or ($Outputformat -eq "LIST"))
+{
+    Write-Output "====== ESXi Host Hardware Report from vCenter ======" >> $Outfile
+    Write-Output "===== Last Reported: $formateddate =====" >> $Outfile
+}
+if($Outputformat -eq "CSV")
+{
+    Write-Output "vCenter,Data Center,Cluster,ESXi Host Name,ESXi Ver,OS Build #,Manufacture,HW Model,Processor,# Procs,# VMs,Total RAM,Used RAM,% Used RAM,Total Storage,Used Storage,% Used Storage" >> $Outfile
+}
 
 #For Each vCenter connect and fetch the HW Data
 foreach ($vcenterServer in $vcenterServers)
@@ -83,17 +93,18 @@ foreach ($vcenterServer in $vcenterServers)
     
 # Get data centers
 $dataCenters = Get-Datacenter | Sort-Object -Property Name
-Write-Output "===== $vcenterServer =====" >> $Outfile
+
+if(($Outputformat -eq "TABLE") -or ($Outputformat -eq "LIST"))
+{
+    Write-Output "===== $vcenterServer =====" >> $Outfile
+}
 
 #If we are formating the output for a table in dokuwiki we create a table header before the Cluster looping
 if($Outputformat -eq "TABLE")
 {
     Write-Output "^Data Center ^Cluster ^ESXi Host Name ^ESXi Ver ^OS Build # ^HW Model ^Processor ^  # Procs  ^  # VMs  ^  Total / Used RAM ^  % Used RAM  ^  Total / Used Storage ^  % Used Storage  ^" >> $Outfile
 }
-if($Outputformat -eq "CSV")
-{
-    Write-Output "Data Center,Cluster,ESXi Host Name,ESXi Ver,OS Build #,Manufacture,HW Model,Processor,# Procs,# VMs,Total RAM,Used RAM,% Used RAM,Total Storage,Used Storage,% Used Storage" >> $Outfile
-}
+
 
 foreach ($dc in $dataCenters) {
     #Write-Output "==== $($dc.Name) ====" >> $Outfile
@@ -163,7 +174,7 @@ foreach ($dc in $dataCenters) {
             } 
             if($Outputformat -eq "CSV")
             {
-                Write-Output "$($dc.Name),$($cluster.Name),$($SVR.Name),$hypervisor,$hypervisorbuild,$MFR,$model,$processorType,$NumCPU,$VMCount,$(Format-Size ($totalRAM * 1MB)),$(Format-Size ($usedRAM * 1MB)),$percentUsedRAM%,$(Format-Size ($totalStorage * 1MB)),$(Format-Size ($usedStorage * 1MB)),$percentUsedStorage%" >> $Outfile
+                Write-Output "$($vcenterServer),$($dc.Name),$($cluster.Name),$($SVR.Name),$hypervisor,$hypervisorbuild,$MFR,$model,$processorType,$NumCPU,$VMCount,$(Format-Size ($totalRAM * 1MB)),$(Format-Size ($usedRAM * 1MB)),$percentUsedRAM%,$(Format-Size ($totalStorage * 1MB)),$(Format-Size ($usedStorage * 1MB)),$percentUsedStorage%" >> $Outfile
             }
 
         }

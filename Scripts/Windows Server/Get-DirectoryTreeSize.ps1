@@ -8,7 +8,7 @@
     The heading will be Green
     The Path will alway be Cyan
     Items above 75% will be Red
-    Items above 50% will be orange
+    Items above 50% will be darkyellow
     Items above 25% will be yellow
     Evething else will be White.
 
@@ -116,7 +116,7 @@ function Format-OutputTable
     $lastModifiedWidth = [math]::Max($maxLastModifiedLength, 14)
 
     # Width Count test
-    $TotalColumnWidth = $typeWidth + $nameWidth + $PercentOfParentWidth + $sizeWidth + $lastModifiedWidth
+    # $TotalColumnWidth = $typeWidth + $nameWidth + $PercentOfParentWidth + $sizeWidth + $lastModifiedWidth
     
     
     # Function to truncate strings that exceed the maximum width
@@ -142,7 +142,7 @@ function Format-OutputTable
         } 
         elseif ($Percentage -ge 50) 
         {
-            return "Orange"
+            return "darkyellow"
         } 
         elseif ($Percentage -ge 25) 
         {
