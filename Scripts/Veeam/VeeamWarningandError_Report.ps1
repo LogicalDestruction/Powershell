@@ -1,8 +1,33 @@
-# List of keywords to highlight (case-insensitive)
-$highlightKeywords = @("immutable", "immutability ") #Can be one or many use ,"searchpattern", "searchpattern"
-#$highlightKeywords = @("Item may have a virus reported by the virus scanner plug-in") #Can be one or many
+<#
+.SYNOPSIS
+    Script for "Veeam for Microsoft 365" to try and Generate a summary report of errors or warnings from all Veeam Jobs.
+    You can highlight Keywords you might be interested in.  For a period of time I was working with Support on immutable errors so you see those in the script below as an example.
+	
+	There is also a loop in the Script
+	    foreach ($log in $logEntries) {
+        if ()
+		In this loop we try to filter out some of the more noisy alerts that we might not care about.   However, you might want to remove this filter if you are looking for a specific error.  
+		Just be aware its there.  In the example below I removed filters for immutable related errors.
+		
+	Another good use case for this script is looking for falures related to virus alerts set to Veeam by Microsoft's API.  I commented out a keyword highlight below.  
+	You would have to adjust the script to make this work.
+		
+.NOTES
+    Name: Change_Target_Repo.ps1
+    Author: Robert Stacks
+    DateCreated: 05-14-2025
+    URL: 
+#>
 
-########### Script ################
+############ User Variables #############
+
+# List of keywords to highlight (case-insensitive)
+# Can be one or many use ,"searchpattern", "searchpattern"
+$highlightKeywords = @("immutable", "immutability ") 
+#$highlightKeywords = @("Item may have a virus reported by the virus scanner plug-in")
+
+############## Script ###################
+
 # Escape and combine into a single regex pattern
 $escapedPattern = ($highlightKeywords | ForEach-Object { [Regex]::Escape($_) }) -join "|"
 $highlightRegex = "(?i)$escapedPattern"
