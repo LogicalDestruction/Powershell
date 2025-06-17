@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Script Script for "Veeam for Microsoft 365" that uses a list to create backups jobs in Veeam.  One for Email, Onedrive, and Sharepoint/Teams.
+    Script for "Veeam for Microsoft 365" that uses a list to create backups jobs in Veeam.  One for Email, Onedrive, and Sharepoint/Teams.
 	Also creates a copy job of the primary backup.
 	Input file is simply a list of TLAs line by line.
 
