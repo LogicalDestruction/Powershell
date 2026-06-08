@@ -102,6 +102,54 @@ v02 - change 2
 ```
 Comment-based help does not need to be excessive. Keep it useful.
 
+#Preferred Input Style
+
+For most sysadmin-focused scripts, prefer a clear User Configurable Variables section near the top of the script instead of requiring many command-line parameters.
+
+Default to a user-editable variable block. Use param blocks only when there is a clear reason.
+
+The preferred workflow is usually:
+
+Open the script
+Review the user-configurable variables
+Edit the values for the current task
+Save the script if needed
+Run the script
+
+This style is preferred because it makes the script easier to review, rerun, and manually adjust later.
+
+Preferred example:
+
+#------------------------------------------------------------
+# User Configurable Variables
+#------------------------------------------------------------
+
+$VCenterServers = @(
+    'vcenter01.domain.com',
+    'vcenter02.domain.com'
+)
+
+$OutputPath = 'C:\Reports\ESXi-Hardware-Inventory.csv'
+$IncludePoweredOffVMs = $false
+$ReportFormat = 'CSV'
+
+Avoid making normal sysadmin scripts require long command-line input like this unless there is a specific reason:
+
+.\Get-Inventory.ps1 -VCenterServers vcenter01.domain.com,vcenter02.domain.com -OutputPath C:\Reports\Inventory.csv -IncludePoweredOffVMs $false -ReportFormat CSV
+
+Command-line parameters are still acceptable when:
+
+The script is intended for automation
+The script will be called by a scheduled task
+The script will be called by another script
+The script needs to be reusable across many environments
+The user specifically asks for parameters
+
+If parameters are used, still consider providing reasonable defaults or examples near the top of the script.
+
+For scripts intended primarily for interactive sysadmin use, a variable block is preferred.
+
+
 ## Variables
 
 Use clear variable names but also avoid using Environment Variables, Automatic Variables, and Preference Variables unless they are being updated by the script.
