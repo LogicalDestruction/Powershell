@@ -1,4 +1,102 @@
+/* 
+Nova Rounding Adjustments
 
+Additional adjustments:
+Padding and spacing for menus and navigation and tab bar
+Context menu mouseover rounding 
+URLbar background padding and rounding
+*/
+
+:root {
+    --border-radius-xsmall: 1px !important; 
+    --border-radius-small: 2px !important; 
+    --border-radius-medium: 3px !important; 
+    --border-radius-large: 4px !important; 
+    --border-radius-xlarge: 6px !important;
+
+    --tab-min-height: 30px !important;
+    --urlbar-height: 30px !important;
+    --urlbar-background-overhang-open: 5px !important;
+}
+
+.tabbrowser-tab {
+    padding-inline: 1px !important;
+}
+
+.urlbarView-background {
+    border-radius: 6px !important;
+}
+
+#urlbar[open] .urlbar-background {
+    border-start-start-radius: 6px !important;
+    border-start-end-radius: 6px !important;
+}
+
+menupopup > menuitem,
+menupopup > menu,
+menugroup > menuitem {
+    border-radius: 5px !important;
+}
+
+menupopup[placespopup="true"] {
+    --panel-padding: 4px !important;
+}
+
+menupopup[placespopup="true"] .bookmark-item {
+    margin-inline: 0 !important;
+    padding-block: 5px !important;
+}
+
+menupopup[placespopup="true"] > menuitem,
+menupopup[placespopup="true"] > menu {
+    margin-inline: 0 !important;
+    padding-block: 5px !important;
+}
+
+#appMenu-popup .subviewbutton {
+    margin-inline: 0 !important;
+    padding-block: 5px !important;
+}
+
+#appMenu-popup .panel-subview-body {
+    padding: 4px !important;
+}
+
+#TabsToolbar {
+    margin-top: -3px !important;
+    margin-bottom: -4px !important;
+}
+.tabbrowser-tab {
+    padding-block: 0 !important;
+}
+
+#nav-bar {
+    padding-block: 2px !important;
+}
+
+#urlbar-container {
+    padding-block: 0 !important;
+}
+
+/*
+--tab-border-radius: var(--border-radius-small) !important;
+
+--button-border-radius: var(--border-radius-small) !important;
+--toolbarbutton-border-radius: var(--border-radius-small) !important;
+
+--card-border-radius: var(--border-radius-small) !important;
+--card-border-radius-compact: var(--border-radius-small) !important;
+--card-cover-image-border-radius: var(--border-radius-small) !important;
+
+--input-text-border-radius: var(--border-radius-small) !important;
+
+--menuitem-border-radius: var(--border-radius-small) !important;
+
+--popup-border-radius: var(--border-radius-small) !important;
+
+--panel-border-radius: var(--border-radius-small) !important;
+--panel-menuitem-border-radius: var(--border-radius-small) !important;
+*/
 
 /* Nova Rounding Adjustments */
 :root {
