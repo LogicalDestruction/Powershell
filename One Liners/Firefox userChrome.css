@@ -1,0 +1,31 @@
+
+
+/* Nova Rounding Adjustments */
+:root {
+
+--border-radius-xsmall: 1px !important; 
+--border-radius-small: 2px !important; 
+--border-radius-medium: 3px !important; 
+--border-radius-large: 4px !important; 
+--border-radius-xlarge: 6px !important; 
+
+/*
+--tab-border-radius: var(--border-radius-small) !important;
+
+--button-border-radius: var(--border-radius-small) !important;
+--toolbarbutton-border-radius: var(--border-radius-small) !important;
+
+--card-border-radius: var(--border-radius-small) !important;
+--card-border-radius-compact: var(--border-radius-small) !important;
+--card-cover-image-border-radius: var(--border-radius-small) !important;
+
+--input-text-border-radius: var(--border-radius-small) !important;
+
+--menuitem-border-radius: var(--border-radius-small) !important;
+
+--popup-border-radius: var(--border-radius-small) !important;
+
+--panel-border-radius: var(--border-radius-small) !important;
+--panel-menuitem-border-radius: var(--border-radius-small) !important;
+*/
+}
