@@ -78,6 +78,14 @@ menupopup[placespopup="true"] > menu {
     padding-block: 0 !important;
 }
 
+@-moz-document url-prefix("about:") {
+    :root {
+        --button-border-radius: 6px !important;
+        --border-radius-circle: 6px !important;
+        --card-border-radius: 6px !important;
+        --border-radius-medium: 6px !important;
+    }
+}
 /*
 --tab-border-radius: var(--border-radius-small) !important;
 
